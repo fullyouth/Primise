@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise</title>
+</head>
+<body>
+  
+</body>
+<script src="./my-promise.js"></script>
+<script>
+  /**
+   * 
+   * 状态转换测试
+   * 同步异步测试
+   * 错误捕获测试
+   * 链式调用测试
+   *  
+  */
+  // 1. 状态转换测试
+  function test1(Promise) {
+    const p1 = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('p1')
+        })
+      })
+    }
+
+    const p2 = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject('p2')
+        })
+      })
+    }
+
+    p1()
+    .then(
+      (res) => {
+        console.log(`p1 then success: ${res}`)
+        return res
+      },
+      (err) => {
+        console.log(`p1 then error: ${err}`)
+      }
+    )
+
+    p2()
+    .then(
+      (res) => {
+        console.log(`p2 then success: ${res}`)
+        return res
+      },
+      (err) => {
+        console.log(`p2 then error: ${err}`)
+      }
+    )
+
+  }
+
+   // 2. 链式调用测试
+  function test2(Promise) {
+    const p1 = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('p1')
+        })
+      })
+    }
+
+    p1()
+    .then(
+      (res) => {
+        console.log(`p1 then success: ${res}`)
+        return res
+      },
+      (err) => {
+        console.log(`p1 then error: ${err}`)
+      }
+    )
+    .then(
+      (res) => {
+        console.log(`p1 then then success: ${res}`)
+      },
+      (err) => {
+        console.log(`p1 then then error: ${err}`)
+      }
+    )
+
+  }
+
+  // 3. 同步异步测试
+  function test3(Promise) {
+    const p1 = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject('p1')
+        })
+      })
+    }
+
+    const p2 = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject('p2')
+        })
+      })
+    }
+
+    p1()
+    .then(
+      (res) => {
+        console.log(`p1 then success: ${res}`)
+        return p2()
+      },
+      (err) => {
+        console.log(`p1 then error: ${err}`)
+      }
+    )
+    .then(
+      (res) => {
+        console.log(`p2 then then success: ${res}`)
+      },
+      (err) => {
+        console.log(`p1 then then error: ${err}`)
+      }
+    )
+
+  }
+
+  // 3. 错误捕获测试
+  function test4(Promise) {
+    const p1 = () => {
+      return new Promise((resolve, reject) => {
+        throw new Error('p1')
+        setTimeout(() => {
+        })
+      })
+    }
+
+    const p2 = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject('p2')
+        })
+      })
+    }
+
+    p1()
+    .then(
+      (res) => {
+        console.log(`p1 then success: ${res}`)
+        return p2()
+      },
+      (err) => {
+        console.log(`p1 then error: ${err}`)
+      }
+    )
+    .then(
+      (res) => {
+        console.log(`p2 then then success: ${res}`)
+      },
+      (err) => {
+        console.log(`p1 then then error: ${err}`)
+      }
+    )
+
+  }
+
+  function main(fn) {
+    fn(MyPromise)
+    fn(Promise)
+  }
+  
+  main(test1)
+
+  // 难点 错误捕获的统一    构造函数  reject | try catch   then中捕获
+</script>
+</html>

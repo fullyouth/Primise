@@ -1,92 +1,145 @@
 class MyPromise {
   constructor(executor) {
     this.executor = executor
-    this.data = null
-    this.reason = null
+    this.data = undefined
+    this.reason = undefined
     this.status = 'pending' // pending | fulfilled | rejected
     this.cbs = []
     this.catchs = []
     this.resolve = this.resolve.bind(this)
     this.reject = this.reject.bind(this)
     this.then = this.then.bind(this)
-    this.catch = this.catch.bind(this)
     try{
       executor(this.resolve, this.reject)
-    } catch(res) {
-      this.status = 'rejected'
-      this.reason = res
-      setTimeout(() => {
-        this.reject()
-      }, 0)
+    } catch(e) {
+      this.reject(e)
     }
   }
 
   resolve(data) {
-    this.status = 'fulfilled'
-    this.data = data
-    this.cbs.forEach(itemFn => {
-      itemFn(this.data)
-    })
+    if (this.status === 'pending') {
+      this.status = 'fulfilled'
+      this.data = data
+      this.cbs.forEach(itemFn => {
+        itemFn()
+      })
+    }
   }
 
   reject(data) {
-    this.status = 'rejected'
-    this.reason = data || this.reason
-    this.catchs.forEach(itemFn => {
-        itemFn(this.reason)
-    })
+    if (this.status === 'pending') {
+      this.status = 'rejected'
+      this.reason = data
+      this.catchs.forEach(itemFn => {
+        itemFn()
+      })
+    }
   }
 
+  resolvePromise(p2, x, resolve, reject) {
+    if (p2 === x) {
+      return reject(new TypeError('循环引用'));
+    }
+
+    let called;
+    if (x != null && (typeof x === 'object' || typeof x === 'function')) {
+      try {
+        let then = x.then;
+        if (typeof then === 'function') {
+          then.call(x, 
+            (y) => {
+              if (called) return
+              called = true
+              this.resolvePromise(p2, y, resolve, reject); 
+          }, err => {
+            if (called) return
+            called = true
+            reject(err)
+          })
+        } else {
+          resolve(x)
+        }
+      } catch(err) {
+        if (called) return
+        called = true
+        reject(err)
+      }
+    } else {
+      resolve(x)
+    }
+  }
+  
+
   then(resolveFn, rejectFn){
-      return new MyPromise((resolve, reject) => {
+    resolveFn = typeof resolveFn === 'function' ? resolveFn : value => value;
+    rejectFn = typeof rejectFn === 'function' ? rejectFn : err => {
+      throw err
+    };
+
+    let p2 = new MyPromise((resolve, reject) => {
+      if (this.status === 'fulfilled') {
+        setTimeout(() => {
+          try {
+            const x = resolveFn(this.data)
+            this.resolvePromise(p2, x, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
+        }, 0)
+      }
+
+      if (this.status === 'rejected') {
+        setTimeout(() => {
+          try {
+            const x = rejectFn(this.reason)
+            this.resolvePromise(p2, x, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
+        }, 0)
+      }
+
+      if (this.status === 'pending') {
         if (resolveFn) {
           this.cbs.push(() => {
-            let reason
-            let ret
-            try {
-              ret = resolveFn(this.data)
-            } catch (error) {
-              reason = error
-            }
-            if (ret instanceof MyPromise) {
-              reason ? ret.then(() => reject(reason)) : ret.then(resolve)
-            } else {
-              reason ? reject(reason) : resolve(ret)
-            }
+            setTimeout(() => {
+              try {
+                const x = resolveFn(this.data)
+                this.resolvePromise(p2, x, resolve, reject)
+              } catch (error) {
+                reject(error)
+              }
+            }, 0)
           })
         }
 
         if (rejectFn) {
           this.catchs.push(() => {
-            let reason
-            let ret
-            try {
-              ret = rejectFn(this.reason)
-            } catch (error) {
-              reason = error
-            }
-            if (ret instanceof MyPromise) {
-              reason ? ret.then(() => reject(reason)) : ret.then(resolve)
-            } else {
-              reason ? reject(reason) : resolve(ret)
-            }
+            setTimeout(() => {
+              try {
+                const x = rejectFn(this.reason)
+                this.resolvePromise(p2, x, resolve, reject)
+              } catch (error) {
+                reject(error)
+              }
+            }, 0)
           })
         }
-        
-      })
-    
-  }
-
-  catch(fn){
-    return new MyPromise((resolve, reject) => {
-      this.catchs.push(() => {
-        const ret = fn(this.data) 
-        if (ret instanceof MyPromise) {
-          ret.then(resolve)
-        } else {
-          resolve(ret)
-        }
-      })
+      }
+      
     })
+    
+    return p2
   }
 }
+
+MyPromise.defer = MyPromise.deferred = function () {
+  let dfd = {}
+  dfd.promise = new MyPromise((resolve, reject) => {
+    dfd.resolve = resolve;
+    dfd.reject = reject;
+  });
+  return dfd;
+}
+
+module.exports = MyPromise

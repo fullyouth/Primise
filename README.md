@@ -43,6 +43,10 @@ Promise会吞掉所有错误，将错误返回在catch函数。
 相信后面的js会有更好的解决方案~
 
 
+### 博客
+<a href='./src/my-promise.js'>手写Promise，通过Promise A+ 规范 </a>  
+
+
 ### 参考文章
 阮一峰老师的 <a href='https://es6.ruanyifeng.com/#docs/promise'>Promise 对象</a>  
 冴羽大佬的 <a href='https://github.com/mqyqingfeng/Blog/issues/98'>ES6 系列之我们来聊聊 Promise</a>  

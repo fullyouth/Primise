@@ -1,4 +1,4 @@
-# Primise
+# 异步编程
 异步编程的路线：callback -> Promise -> Generator -> async / await  
 Promise是对callback方式的优化
 
@@ -40,11 +40,7 @@ Promise的执行顺序是跟大脑的思维方式是一致的
 __错误捕获__  
 Promise会吞掉所有错误，将错误返回在catch函数。  
 但是Promise依然有很多问题,如：如果一个then返回的Promise没有注册错误事件，也没有被try catch，那么它的错误就会暴露在控制台。  
-相信后面的js会有更好的解决方案~
-
-
-### 博客
-<a href='./src/my-promise.js'>手写Promise，通过Promise A+ 规范 </a>  
+相信后面的js会有更好的解决方案~  
 
 
 ### 参考文章
@@ -52,6 +48,18 @@ Promise会吞掉所有错误，将错误返回在catch函数。
 冴羽大佬的 <a href='https://github.com/mqyqingfeng/Blog/issues/98'>ES6 系列之我们来聊聊 Promise</a>  
 中文翻译<a href='http://gdut_yy.gitee.io/doc-ydkjs/async&performance/ch3.html'>你不知道的javascript</a>  
 英文原文 Kyle Simpson 的<a href='https://github.com/getify/You-Dont-Know-JS'>You-Dont-Know-JS</a>  
+
+
+### 面试题
+<a href='./src/my-promise.js'>手写Promise，通过Promise A+ 规范 </a>
+<a href='./src/cancel-promise.js'>取消Promise</a>  
+<a href='./src/await-promise.js'>串行Promise</a>  
+<a href='./src/async-promise.js'>并行Promise</a>  
+<a href='./src/面试题1.md'>一道字节跳动的Promise的面试题</a>    
+<a href='./src/面试题2.md'>stackOverflow上的一道Promse题（resolve(thenable) and resolve('non-thenable-object')）--附带赠送面试题</a>    
+<a href='./src/面试题3.md'>一道蚂蚁金服异步串行的面试题</a>   
+<a href='./src/面试题4.md'>node eventLoop 与 浏览器的不同</a>   
+<a href='./src/eventLoop.md'>eventLoop</a>   
 
 
 

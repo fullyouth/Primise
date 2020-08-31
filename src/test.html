@@ -9,7 +9,7 @@
   
 </body>
 <script src="./my-promise.js"></script>
-<script>
+<!-- <script>
   /**
    * 
    * 状态转换测试
@@ -177,5 +177,16 @@
   main(test1)
 
   // 难点 错误捕获的统一    构造函数  reject | try catch   then中捕获
+</script> -->
+<script>
+  const p2 = new MyPromise((resolve) => {
+    resolve(1)
+  })
+  const p1 = new MyPromise((resolve) => {
+    resolve(p2)
+  })
+  p1.then(res => {
+    console.log(res)
+  })
 </script>
 </html>

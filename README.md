@@ -52,9 +52,9 @@ Promise会吞掉所有错误，将错误返回在catch函数。
 
 ### 面试题
 <a href='./src/my-promise.js'>手写Promise，通过Promise A+ 规范 </a>
-<a href='./src/cancel-promise.js'>取消Promise</a>  
-<a href='./src/await-promise.js'>串行Promise</a>  
-<a href='./src/async-promise.js'>并行Promise</a>  
+<a href='./src/cancel-promise/index.js'>取消Promise</a>  
+<a href='./src/await-promise/index.js'>串行Promise</a>  
+<a href='./src/async-promise/index.js'>并行Promise</a>  
 <a href='./src/面试题1.md'>一道字节跳动的Promise的面试题</a>    
 <a href='./src/面试题2.md'>stackOverflow上的一道Promse题（resolve(thenable) and resolve('non-thenable-object')）--附带赠送面试题</a>    
 <a href='./src/面试题3.md'>一道蚂蚁金服异步串行的面试题</a>   

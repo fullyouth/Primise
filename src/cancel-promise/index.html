@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cancel-promise</title>
+</head>
+<body>
+  
+</body>
+<script src="./index.js"></script>
+<script>
+  // 用法
+  const p = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('p1 resolved')
+    }, 2000)
+  })
+  const p1 = promseWrap(p)
+  p1
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  
+  setTimeout(() => {
+    p1.reject('cancel')
+  }, 1000)
+
+</script>
+</html>
